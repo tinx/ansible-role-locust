@@ -1,0 +1,96 @@
+---
+# For state=stopped or state=absent:
+- name: Verify existence of instance
+  stat:
+    path: '/etc/systemd/system/locust-{{ instance_name }}.service'
+  register: st
+- name: Stop locust.io instance
+  service:
+    name: 'locust-{{ instance_name }}'
+    state: stopped
+  when: st.stat.exists and ( state == 'stopped' or state == 'absent' )
+
+# For state=absent:
+- name: Verify existence base directory
+  stat:
+    path: '/opt/locust.io'
+  register: st
+- block:
+    - name: Remove locust.io instance
+      file:
+        path: '/opt/locust.io/{{ instance_name }}'
+        state: absent
+    - name: Check whether base directory is empty
+      find:
+        paths: '/opt/locust.io'
+        file_type: any
+      register: ent
+    - name: Remove base directory, if necessary
+      file:
+        path: '/opt/locust.io'
+        state: absent
+      when: ent.matched|int == 1 and ent.files[0].path == '/opt/locust.io/base'
+    - name: Remove systemd service file
+      file:
+        path: '/etc/systemd/system/locust-{{ instance_name }}.service'
+        state: absent
+  when: st.stat.exists and state == 'absent'
+
+# For all other states, make sure Locust.io is installed
+- block:
+    - name: Add ZeroMQ repository
+      yum_repository:
+        baseurl: 'https://download.opensuse.org/repositories/network:/messaging:/zeromq:/release-draft/CentOS_7/'
+        gpgkey: 'http://download.opensuse.org/repositories/network:/messaging:/zeromq:/release-draft/CentOS_7/repodata/repomd.xml.key'
+        enabled: true
+        name: 'ZeroMQ'
+        description: 'Upstream repository for ZeroMQ message queue'
+        state: present
+    - name: Update repo caches
+      yum:
+        name: python-virtualenv
+        update_cache: true
+    - name: Install required packages
+      yum:
+        name: '{{ item }}'
+        state: present
+      with_items:
+        - zeromq-devel
+        - gcc
+    - name: Check directories
+      file:
+        path: '{{ item }}'
+        state: directory
+        mode: 0700
+      with_items:
+        - '/opt/locust.io/base'
+        - '/opt/locust.io/{{ instance_name }}'
+    - name: Install python requirements
+      pip:
+        name: 'locustio'
+        virtualenv: '/opt/locust.io/base/virtenv'
+    - name: Render systemd service file
+      template:
+        src: locust_systemd.j2
+        dest: '/etc/systemd/system/locust-{{ instance_name }}.service'
+        mode: 0644
+    - name: Copy instance data
+      copy:
+        src: '{{ instance_data }}'
+        dest: '/opt/locust.io/{{ instance_name }}'
+      when: instance_data is defined
+  when: state == 'started' or state == 'restarted' or state == 'present'
+
+# For state=restarted:
+- name: Restart locust.io instance
+  service:
+    name: 'locust-{{ instance_name }}'
+    state: restarted
+  when: state == 'restarted'
+
+# For state=started
+- name: Start locust.io instance
+  service:
+    name: 'locust-{{ instance_name }}'
+    state: started
+  when: state == 'started'

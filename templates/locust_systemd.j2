@@ -1,0 +1,67 @@
+[Unit]
+Description=Locust.io {{ instance_name }} master
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+Restart=on-failure
+User=root
+Group=root
+PermissionsStartOnly=true
+{% set options = "" %}
+{% if master_mode %}
+{% set options = "--master" %}
+{% endif %}
+{% if bind_host is defined %}
+{% set options = options + " --master-bind-host=" + bind_host|string %}
+{% endif %}
+{% if bind_port is defined %}
+{% set options = options + " --master-bind-port=" + bind_port|string %}
+{% endif %}
+{% if locustfile|list|first == '/' %}
+{% set options = options + " --locustfile=" + locustfile %}
+{% else %}
+{% set options = options + " --locustfile=/opt/locust.io/" + instance_name + "/" + locustfile %}
+{% endif %}
+{% if web_host is defined %}
+{% set options = options + " --web-host=" + web_host %}
+{% endif %}
+{% if web_port is defined %}
+{% set options = options + " --web-port=" + web_port|string %}
+{% endif %}
+{% if no_web %}
+{% set options = options + " --no-web" %}
+{% endif %}
+{% if clients is defined %}
+{% set options = options + " --clients=" + clients|string %}
+{% endif %}
+{% if hatch_rate is defined %}
+{% set options = options + " --hatch-rate=" + hatch_rate|string %}
+{% endif %}
+{% if num_request is defined %}
+{% set options = options + " --num-request=" + num_request|string %}
+{% endif %}
+{% if run_time is defined %}
+{% set options = options + " --run-time=" + run_time|string %}
+{% endif %}
+{% if host is defined %}
+{% set options = options + " --host=" + host %}
+{% endif %}
+{% if expect_slaves is defined %}
+{% set options = options + " --expect-slaves=" + expect_slaves|string %}
+{% endif %}
+{% if csv is defined %}
+{% set options = options + " --csv=" + csv %}
+{% endif %}
+{% if loglevel is defined %}
+{% set options = options + " --loglevel=" + loglevel %}
+{% endif %}
+{% if logfile is defined %}
+{% set options = options + " --logfile=" + logfile %}
+{% endif %}
+{% set options = options + " " + locust_classes|join(' ') %}
+ExecStart=/opt/locust.io/base/virtenv/bin/locust {{ options }}
+KillSignal=SIGTERM
+
+[Install]
+WantedBy=multi-user.target

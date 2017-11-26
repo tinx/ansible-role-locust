@@ -1,0 +1,6 @@
+.molecule
+*.swp
+__pycache__
+*.pyc
+.cache
+.yamllint
