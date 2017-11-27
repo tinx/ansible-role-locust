@@ -74,6 +74,9 @@
         src: locust_systemd.j2
         dest: '/etc/systemd/system/locust-{{ instance_name }}.service'
         mode: 0644
+      notify:
+        - reload locust systemd definitions
+        - restart locust instance
     - name: Copy instance data
       copy:
         src: '{{ instance_data }}'
