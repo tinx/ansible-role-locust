@@ -47,6 +47,7 @@
         clients: 100
         hatch_rate: 6
         num_request: 10000
+        enabled: true
     - name: Install locust.io instance locust-4
       include_role:
         name: tinx.locust_master

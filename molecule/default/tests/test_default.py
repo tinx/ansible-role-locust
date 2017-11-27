@@ -114,6 +114,12 @@ def test_locust_3_optional_parameters(host):
     assert "MyLocust" in unit
 
 
+def test_locust_3_is_enabled(host):
+    """Checks whether instance-3 is enabled to start at boot-time
+       from systemd's perspective."""
+    assert host.service('locust-locust-3').is_enabled
+
+
 def locust_5_uses_absolute_path_locustfile(host):
     """This verifies that instance locust-5 was created using the
        absolute path to the locustfile that was explicitly given

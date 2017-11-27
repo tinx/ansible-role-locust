@@ -81,6 +81,13 @@
       when: instance_data is defined
   when: state == 'started' or state == 'restarted' or state == 'present'
 
+# Handle "enabled" option
+- name: Enable or disable instance systemd service
+  service:
+    name: 'locust-{{ instance_name }}'
+    enabled: '{{ enabled }}'
+  when: state != 'absent'
+
 # For state=restarted:
 - name: Restart locust.io instance
   service:
