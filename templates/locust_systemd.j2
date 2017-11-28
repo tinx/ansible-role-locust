@@ -5,8 +5,16 @@ After=network-online.target
 
 [Service]
 Restart=on-failure
+{% if run_as_user is defined %}
+User={{ run_as_user }}
+{% else %}
 User=root
+{% endif %}
+{% if run_as_group is defined %}
+Group={{ run_as_group }}
+{% else %}
 Group=root
+{% endif %}
 PermissionsStartOnly=true
 {% set options = "" %}
 {% if master_mode %}

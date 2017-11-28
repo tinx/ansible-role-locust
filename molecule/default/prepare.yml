@@ -38,7 +38,7 @@
         locustfile: locustfile.py
         csv: csvreport
         loglevel: 'ERROR'
-        logfile: locust-3.log
+        logfile: /tmp/locust-3.log
         host: 'http://127.0.0.1'
         web_host: ''
         web_port: 12345
@@ -48,6 +48,8 @@
         hatch_rate: 6
         num_request: 10000
         enabled: true
+        run_as_user: daemon
+        run_as_group: daemon
     - name: Install locust.io instance locust-4
       include_role:
         name: tinx.locust_master

@@ -37,6 +37,8 @@ inside a virtualenv.
 | `hatch_rate`    |           | Spawn rate of clients. Required for `no_web` |
 | `num_request`   |           | Number of requests to perform; for `no_web`  |
 | `run_time`      |           | How long to test, e.g. '1h30m'; for `no_web` |
+| `run_as_user`   |           | Which unix user to launch Locust.io as       |
+| `run_as_group`  |           | Which unix group to launch Locust.io under   |
 
 The `state` parameter can be one of:
 

@@ -40,7 +40,7 @@ def test_instances_running(host):
     """This tests that only the expected three instances are running,
        (master, locust-3 and locust-5) and that they are running
        using the base virtualenv."""
-    pythons = host.process.filter(user="root")
+    pythons = host.process.filter()
     locusts = [proc for proc in pythons if 'locust.io' in proc.args]
     assert len(locusts) == 3
     assert len(list(filter(
