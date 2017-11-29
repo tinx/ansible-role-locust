@@ -46,9 +46,12 @@ def test_instances_running(host):
     assert len(list(filter(
       lambda x: '/opt/locust.io/master/locustfile.py' in x.args, locusts
       ))) == 1
-    assert len(list(filter(
+    l3 = list(filter(
       lambda x: '/opt/locust.io/locust-3/locustfile.py' in x.args, locusts
-      ))) == 1
+      ))
+    assert len(l3) == 1
+    assert l3[0].user == 'daemon'
+    assert l3[0].group == 'daemon'
     assert len(list(filter(
       lambda x: '/opt/locust.io/locust-5/./locustfile.py' in x.args, locusts
       ))) == 1
