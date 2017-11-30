@@ -24,6 +24,7 @@
         instance_name: locust-2
         instance_data: data/
         locustfile: locustfile.py
+        state: started
     - name: Install locust.io instance locust-3
       include_role:
         name: tinx.locust_master

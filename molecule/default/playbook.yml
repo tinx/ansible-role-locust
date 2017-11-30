@@ -13,8 +13,11 @@
       include_role:
         name: tinx.locust_master
       vars:
+        bind_port: 6002
         instance_name: locust-2
-        state: stopped
+        instance_data: data/
+        locustfile: locustfile.py
+        state: present
     - name: Install instance 'master'
       include_role:
         name: tinx.locust_master
