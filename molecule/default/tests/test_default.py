@@ -123,6 +123,18 @@ def test_locust_3_is_enabled(host):
     assert host.service('locust-locust-3').is_enabled
 
 
+def test_locust_3_has_correct_owner(host):
+    """Have a look at the owner and group of the instance directory
+       and data files of locust-3"""
+    with host.sudo():
+        f = host.file("/opt/locust.io/locust-3")
+        assert f.user == 'daemon'
+        assert f.group == 'daemon'
+        f = host.file("/opt/locust.io/locust-3/locustfile.py")
+        assert f.user == 'daemon'
+        assert f.group == 'daemon'
+
+
 def locust_5_uses_absolute_path_locustfile(host):
     """This verifies that instance locust-5 was created using the
        absolute path to the locustfile that was explicitly given
