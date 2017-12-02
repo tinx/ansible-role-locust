@@ -42,10 +42,9 @@ inside a virtualenv.
 
 The `state` parameter can be one of:
 
-* `present` - Locust.io should be installed in it's own virtualenv
 * `started` - Locust.io should be up and running
 * `restarted` - Locust.io should be freshly restarted
-* `stopped` - Locust.io should be stopped
+* `stopped` - Locust.io should be present but should not be running
 * `absent` - Locust.io should not be installed
 
 A directory named `/opt/locust.io` will be created. Inside of it, a

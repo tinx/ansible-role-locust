@@ -8,7 +8,7 @@
   service:
     name: 'locust-{{ instance_name }}'
     state: stopped
-  when: st.stat.exists and ( state == 'stopped' or state == 'absent' or state == 'present' )
+  when: st.stat.exists and ( state == 'stopped' or state == 'absent' )
 
 # For state=absent:
 - name: Verify existence base directory
@@ -90,13 +90,10 @@
         owner: '{{ run_as_user|default(omit) }}'
         group: '{{ run_as_group|default(omit) }}'
       when: instance_data is defined
-  when: state == 'started' or state == 'restarted' or state == 'present'
-
-# Handle "enabled" option
-- name: Enable or disable instance systemd service
-  service:
-    name: 'locust-{{ instance_name }}'
-    enabled: '{{ enabled }}'
+    - name: Enable or disable instance systemd service
+      service:
+        name: 'locust-{{ instance_name }}'
+        enabled: '{{ enabled }}'
   when: state != 'absent'
 
 # For state=restarted:

@@ -15,7 +15,7 @@
         instance_name: locust-1
         instance_data: data/
         locustfile: locustfile.py
-        state: present
+        state: stopped
     - name: Install locust.io instance locust-2
       include_role:
         name: tinx.locust_master
@@ -59,7 +59,7 @@
         instance_name: locust-4
         instance_data: data/
         locustfile: locustfile.py
-        state: present
+        state: stopped
     - name: Install locust.io instance locust-5
       include_role:
         name: tinx.locust_master
@@ -68,4 +68,4 @@
         instance_name: locust-5
         instance_data: data/
         locustfile: /opt/locust.io/locust-5/./locustfile.py
-        state: present
+        state: stopped
