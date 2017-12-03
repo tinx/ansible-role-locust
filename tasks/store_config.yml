@@ -67,3 +67,13 @@
     - { name: "csv", value: "{{csv|default('__undef')}}" }
     - { name: "loglevel", value: "{{loglevel|default('__undef')}}" }
     - { name: "logfile", value: "{{logfile|default('__undef')}}" }
+
+- name: Storing locust classes
+  lineinfile:
+    path: '/opt/locust.io/{{ instance_name }}/start_script'
+    create: true
+    state: present
+    regexp: '^LOCUSTCLASSES='
+    line: "LOCUSTCLASSES='{{locust_classes|default([])|join(\" \")}}'"
+  notify:
+    - restart locust instance

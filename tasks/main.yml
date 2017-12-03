@@ -3,12 +3,12 @@
 - name: Verify existence of instance
   stat:
     path: '/etc/systemd/system/locust-{{ instance_name }}.service'
-  register: st
+  register: st_service
 - name: Stop locust.io instance
   service:
     name: 'locust-{{ instance_name }}'
     state: stopped
-  when: st.stat.exists and ( state == 'stopped' or state == 'absent' )
+  when: st_service.stat.exists and ( state == 'stopped' or state == 'absent' )
 
 # For state=absent:
 - name: Verify existence base directory
@@ -83,6 +83,29 @@
       notify:
         - reload locust systemd definitions
         - restart locust instance
+      when: not st_service.stat.exists
+    - name: Store run_as_user option
+      lineinfile:
+        path: '/etc/systemd/system/locust-{{ instance_name }}.service'
+        create: false
+        state: present
+        regexp: '^User='
+        line: "User={{ run_as_user }}"
+      notify:
+        - reload locust systemd definitions
+        - restart locust instance
+      when: run_as_user is defined
+    - name: Store run_as_group option
+      lineinfile:
+        path: '/etc/systemd/system/locust-{{ instance_name }}.service'
+        create: false
+        state: present
+        regexp: '^Group='
+        line: "Group={{ run_as_group }}"
+      notify:
+        - reload locust systemd definitions
+        - restart locust instance
+      when: run_as_group is defined
     - name: Copy instance data
       copy:
         src: '{{ instance_data }}'
@@ -96,6 +119,7 @@
       service:
         name: 'locust-{{ instance_name }}'
         enabled: '{{ enabled }}'
+      when: enabled is defined
   when: state != 'absent'
 
 # Store config

@@ -25,6 +25,14 @@
         bind_port: 6000
         instance_data: data/
         locustfile: locustfile.py
+    - name: Alter instance locust-3
+      include_role:
+        name: tinx.locust_master
+      vars:
+        instance_name: locust-3
+        locust_classes:
+          - 'MyLocust'
+          - 'MyOtherLocust'
     - name: Start instance locust-5
       include_role:
         name: tinx.locust_master

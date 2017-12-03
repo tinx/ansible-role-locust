@@ -1,8 +1,3 @@
 ---
-master_mode: true
 instance_name: 'master'
-master_port: 5557
 state: 'started'
-locust_classes: []
-no_web: true
-enabled: false

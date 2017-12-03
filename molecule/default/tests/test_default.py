@@ -39,7 +39,9 @@ def test_correct_directory(host):
 def test_instances_running(host):
     """This tests that only the expected three instances are running,
        (master, locust-3 and locust-5) and that they are running
-       using the base virtualenv."""
+       using the base virtualenv. It also tests that instance locust-3
+       is running under the expected ownership and has been restarted
+       with changed locust_classes."""
     pythons = host.process.filter()
     locusts = [proc for proc in pythons
                if '/opt/locust.io/base/virtenv/bin/locust' in proc.args]
@@ -57,6 +59,7 @@ def test_instances_running(host):
     assert len(l3) == 1
     assert l3[0].user == 'daemon'
     assert l3[0].group == 'daemon'
+    assert 'MyOtherLocust' in l3[0].args
     assert len(list(filter(
       lambda x: '/opt/locust.io/locust-5/./locustfile.py' in x.args, locusts
       ))) == 1
@@ -120,6 +123,7 @@ def test_locust_3_optional_parameters(host):
     assert "--loglevel=" in unit
     assert "--logfile=" in unit
     assert "MyLocust" in unit
+    assert "MyOtherLocust" in unit
 
 
 def test_locust_3_is_enabled(host):
