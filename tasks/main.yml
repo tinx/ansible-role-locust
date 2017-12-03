@@ -1,4 +1,9 @@
 ---
+- name: Check mandatory 'instance_name' parameter
+  fail:
+    msg: "'instance_name' parameter is required"
+  when: instance_name is not defined
+
 # For state=stopped or state=absent:
 - name: Verify existence of instance
   stat:
@@ -9,6 +14,12 @@
     name: 'locust-{{ instance_name }}'
     state: stopped
   when: st_service.stat.exists and ( state == 'stopped' or state == 'absent' )
+
+# New instances require a mode parameter
+- name: Check mandatory 'mode' parameter
+  fail:
+    msg: "'mode' parameter must be one 'master', 'slave' or 'stand-alone'"
+  when: not st_service.stat.exists and state != 'absent' and ( mode is not defined or ( mode != 'master' and mode != 'slave' and mode != 'stand-alone' ) )
 
 # For state=absent:
 - name: Verify existence base directory

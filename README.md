@@ -1,6 +1,6 @@
-# Ansible Role `locust_master`
+# Ansible Role `locust`
 
-Manages locust.io masters.
+Manages locust.io instances.
 
 ## Requirements
 
@@ -12,33 +12,52 @@ registered and enabled to do this.
 All python related software requirements will be auto-installed
 inside a virtualenv.
 
-## Role Variables
+## Role Parameters
+
+### Common parameters for all modes
 
 | Variable        | Default   | Comments (type)                              |
 | :---            | :---      | :---                                         |
-| `master_mode`   | `true`    | Run in master mode or in stand-alone mode?   |
-| `instance_name` | `master`  | Name to distiguish between instances.        |
-| `instance_data` |           | Path to data to be copied into instance dir  |
-| `locust_classes`| `[]`      | List of client classes to run                |
-| `bind_host`     |           | IP address to bind the master instance to    |
-| `bind_port`     | `5557`    | TCP port number of the Locust.io master      |
-| `locustfile`    |           | The Locust.io scenario file to play          |
+| `instance_name` |           | Required. Name to distiguish instances.      |
+| `mode`          | `slave`   | Must be either master, slave or stand-alone  |
 | `state`         | `started` | State of Locust.io on the host.              |
 | `enabled`       | `false`   | If true, start this instance after reboots   |
+| `run_as_user`   | `root`    | Which unix user to launch Locust.io as       |
+| `run_as_group`  | `root`    | Which unix group to launch Locust.io under   |
+| `instance_data` |           | Path to data to be copied into instance dir  |
+| `locust_classes`| `[]`      | List of client classes to run                |
+| `locustfile`    |           | The Locust.io scenario file to play          |
 | `csv`           |           | Base name of CVS report files                |
 | `logfile`       |           | Filename of the Locust.io logfile            |
 | `loglevel`      |           | Locust.io log level                          |
+
+### Master Mode and Stand-Alone Mode Parameters
+
+| Variable        | Default   | Comments (type)                              |
+| :---            | :---      | :---                                         |
 | `host`          |           | URL of the host to load test                 |
 | `web_host`      |           | IP address to bind the web interface to      |
 | `web_port`      |           | Port to bind the web interface to            |
+
+### Master Mode Parameters
+
+| Variable        | Default   | Comments (type)                              |
+| :---            | :---      | :---                                         |
+| `bind_host`     |           | IP address to bind the master instance to    |
+| `bind_port`     |           | TCP port number of the Locust.io master      |
 | `no_web`        | `true`    | No web interface, start tests immediately    |
 | `expect_slaves` |           | How many slaves to wait for before starting  |
 | `clients`       |           | Number of clients. Required for `no_web`     |
 | `hatch_rate`    |           | Spawn rate of clients. Required for `no_web` |
 | `num_request`   |           | Number of requests to perform; for `no_web`  |
 | `run_time`      |           | How long to test, e.g. '1h30m'; for `no_web` |
-| `run_as_user`   |           | Which unix user to launch Locust.io as       |
-| `run_as_group`  |           | Which unix group to launch Locust.io under   |
+
+### Slave Mode Parameters
+
+| Variable        | Default   | Comments (type)                              |
+| :---            | :---      | :---                                         |
+| `master_host`   |           | IP, hostname or FQDN of the Locust.io master |
+| `master_port`   | 5557      | TCP port number of the Locust.io master      |
 
 The `state` parameter can be one of:
 
@@ -74,17 +93,25 @@ None
 
 ## Example Playbook
 
-To have a running Locust.io master you could do this:
+To have a running Locust.io master/slave setup you could do this:
 
     - hosts: locust_master
       tasks:
       - include_role:
-           name: tinx.locust_master
+           name: tinx.locust
         vars:
-           instance_data: data/
-           locustfile: 'stress-test-prod.py'
+           mode: master
 
-This master would wait for at least one slave to connect and would
+    - hosts: locust_slaves
+      tasks:
+      - include_role:
+           name: tinx.locust
+        vars:
+           mode: slave
+           instance_data: data/
+           locustfile: 'stresstest-prod.py'
+
+The master would wait for at least one slave to connect and would
 then start testing.
 
 ## Testing

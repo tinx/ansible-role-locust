@@ -9,63 +9,59 @@
       changed_when: False
     - name: Install locust.io instance locust-1
       include_role:
-        name: tinx.locust_master
+        name: tinx.locust
       vars:
-        bind_port: 6001
+        mode: slave
         instance_name: locust-1
         instance_data: data/
+        master_host: master
         locustfile: locustfile.py
         state: stopped
     - name: Install locust.io instance locust-2
       include_role:
-        name: tinx.locust_master
+        name: tinx.locust
       vars:
-        bind_port: 6002
+        mode: slave
         instance_name: locust-2
         instance_data: data/
+        master_host: master
         locustfile: locustfile.py
         state: started
     - name: Install locust.io instance locust-3
       include_role:
-        name: tinx.locust_master
+        name: tinx.locust
       vars:
-        bind_host: '*'
-        bind_port: 6003
-        master_mode: false
+        mode: slave
         instance_name: locust-3
         instance_data: data/
         locust_classes:
           - 'MyLocust'
+        master_host: master
+        master_port: 5001
         locustfile: locustfile.py
         csv: csvreport
         loglevel: 'ERROR'
         logfile: locust-3.log
-        host: 'http://127.0.0.1'
-        web_host: ''
-        web_port: 12345
-        no_web: false
-        expect_slaves: 2
-        clients: 100
-        hatch_rate: 6
-        num_request: 10000
         enabled: true
         run_as_user: daemon
         run_as_group: daemon
     - name: Install locust.io instance locust-4
       include_role:
-        name: tinx.locust_master
+        name: tinx.locust
       vars:
-        bind_port: 6004
+        mode: slave
         instance_name: locust-4
         instance_data: data/
+        master_host: master
         locustfile: locustfile.py
         state: stopped
     - name: Install locust.io instance locust-5
       include_role:
-        name: tinx.locust_master
+        name: tinx.locust
       vars:
-        bind_port: 6005
+        mode: slave
         instance_name: locust-5
         instance_data: data/
+        master_host: master
         locustfile: /opt/locust.io/locust-5/./locustfile.py
         state: stopped

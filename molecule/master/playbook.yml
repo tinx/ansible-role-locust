@@ -1,0 +1,46 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  tasks:
+    - name: De-install instance locust-1
+      include_role:
+        name: tinx.locust
+      vars:
+        instance_name: locust-1
+        state: absent
+    - name: Stop instance locust-2
+      include_role:
+        name: tinx.locust
+      vars:
+        bind_port: 6002
+        instance_name: locust-2
+        instance_data: data/
+        locustfile: locustfile.py
+        state: stopped
+    - name: Install instance 'master'
+      include_role:
+        name: tinx.locust
+      vars:
+        mode: master
+        instance_name: 'master'
+        bind_port: 6000
+        instance_data: data/
+        locustfile: locustfile.py
+    - name: Alter instance locust-3
+      include_role:
+        name: tinx.locust
+      vars:
+        instance_name: locust-3
+        locust_classes:
+          - 'MyLocust'
+          - 'MyOtherLocust'
+    - name: Start instance locust-5
+      include_role:
+        name: tinx.locust
+      vars:
+        bind_port: 6005
+        instance_name: locust-5
+        instance_data: data/
+        locustfile: /opt/locust.io/locust-5/./locustfile.py
+        state: started

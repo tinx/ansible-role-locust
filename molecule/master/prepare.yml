@@ -1,0 +1,75 @@
+---
+- name: Prepare
+  hosts: all
+  become: True
+  gather_facts: False
+  tasks:
+    - name: Install python for Ansible
+      raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+      changed_when: False
+    - name: Install locust.io instance locust-1
+      include_role:
+        name: tinx.locust
+      vars:
+        mode: 'master'
+        bind_port: 6001
+        instance_name: locust-1
+        instance_data: data/
+        locustfile: locustfile.py
+        state: stopped
+    - name: Install locust.io instance locust-2
+      include_role:
+        name: tinx.locust
+      vars:
+        mode: 'master'
+        bind_port: 6002
+        instance_name: locust-2
+        instance_data: data/
+        locustfile: locustfile.py
+        state: started
+    - name: Install locust.io instance locust-3
+      include_role:
+        name: tinx.locust
+      vars:
+        mode: 'stand-alone'
+        bind_host: '*'
+        bind_port: 6003
+        instance_name: locust-3
+        instance_data: data/
+        locust_classes:
+          - 'MyLocust'
+        locustfile: locustfile.py
+        csv: csvreport
+        loglevel: 'ERROR'
+        logfile: locust-3.log
+        host: 'http://127.0.0.1'
+        web_host: ''
+        web_port: 12345
+        no_web: false
+        expect_slaves: 2
+        clients: 100
+        hatch_rate: 6
+        num_request: 10000
+        enabled: true
+        run_as_user: daemon
+        run_as_group: daemon
+    - name: Install locust.io instance locust-4
+      include_role:
+        name: tinx.locust
+      vars:
+        mode: 'master'
+        bind_port: 6004
+        instance_name: locust-4
+        instance_data: data/
+        locustfile: locustfile.py
+        state: stopped
+    - name: Install locust.io instance locust-5
+      include_role:
+        name: tinx.locust
+      vars:
+        mode: 'master'
+        bind_port: 6005
+        instance_name: locust-5
+        instance_data: data/
+        locustfile: /opt/locust.io/locust-5/./locustfile.py
+        state: stopped

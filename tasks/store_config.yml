@@ -24,7 +24,6 @@
   notify:
     - restart locust instance
   with_items:
-    - { name: "master", value: "{{master_mode|default('__undef')}}" }
     - { name: "no-web", value: "{{no_web|default('__undef')}}" }
 - name: Store boolean option
   lineinfile:
@@ -37,7 +36,6 @@
   notify:
     - restart locust instance
   with_items:
-    - { name: "master", value: "{{master_mode|default('__undef')}}" }
     - { name: "no-web", value: "{{no_web|default('__undef')}}" }
 
 # String values
@@ -53,9 +51,14 @@
   notify:
     - restart locust instance
   with_items:
+    # common options
+    - { name: "csv", value: "{{csv|default('__undef')}}" }
+    - { name: "loglevel", value: "{{loglevel|default('__undef')}}" }
+    - { name: "logfile", value: "{{logfile|default('__undef')}}" }
+    - { name: "locustfile", value: "{{locustfile|default('__undef')}}" }
+    # master options
     - { name: "master-bind-host", value: "{{bind_host|default('__undef')}}" }
     - { name: "master-bind-port", value: "{{bind_port|default('__undef')|string}}" }
-    - { name: "locustfile", value: "{{locustfile|default('__undef')}}" }
     - { name: "web-host", value: "{{web_host|default('__undef')}}" }
     - { name: "web-port", value: "{{web_port|default('__undef')|string}}" }
     - { name: "clients", value: "{{clients|default('__undef')|string}}" }
@@ -64,9 +67,9 @@
     - { name: "run-time", value: "{{run_time|default('__undef')}}" }
     - { name: "host", value: "{{host|default('__undef')}}" }
     - { name: "expect-slaves", value: "{{expect_slaves|default('__undef')|string}}" }
-    - { name: "csv", value: "{{csv|default('__undef')}}" }
-    - { name: "loglevel", value: "{{loglevel|default('__undef')}}" }
-    - { name: "logfile", value: "{{logfile|default('__undef')}}" }
+    # slave options
+    - { name: "master-host", value: "{{master_host|default('__undef')}}" }
+    - { name: "master-port", value: "{{master_port|default('__undef')|string}}" }
 
 - name: Storing locust classes
   lineinfile:
