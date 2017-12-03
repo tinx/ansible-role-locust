@@ -90,10 +90,17 @@
         owner: '{{ run_as_user|default(omit) }}'
         group: '{{ run_as_group|default(omit) }}'
       when: instance_data is defined
+      notify:
+        - restart locust instance
     - name: Enable or disable instance systemd service
       service:
         name: 'locust-{{ instance_name }}'
         enabled: '{{ enabled }}'
+  when: state != 'absent'
+
+# Store config
+- name: Store config
+  import_tasks: store_config.yml
   when: state != 'absent'
 
 # For state=restarted:

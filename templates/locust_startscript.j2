@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# {{ ansible_managed }}
+
+LOCUSTCLASSES='{{locust_classes|default([])|join(" ")}}'
+
+cd '/opt/locust.io/{{ instance_name|quote }}'
+/opt/locust.io/base/virtenv/bin/python /opt/locust.io/base/virtenv/bin/locust \
+$LOCUSTCLASSES

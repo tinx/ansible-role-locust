@@ -1,0 +1,69 @@
+---
+- name: Look for existing config file
+  stat:
+    path: '/opt/locust.io/{{ instance_name }}/start_script'
+  register: st
+- name: Render basic start script
+  template:
+    src: locust_startscript.j2
+    dest: '/opt/locust.io/{{ instance_name }}/start_script'
+    mode: 0755
+    owner: '{{ run_as_user|default(omit) }}'
+    group: '{{ run_as_group|default(omit) }}'
+  when: not st.stat.exists
+
+# Boolean values
+- name: Store boolean option
+  lineinfile:
+    path: '/opt/locust.io/{{ instance_name }}/start_script'
+    create: true
+    state: present
+    line: "--{{ item.name }} \\"
+    insertbefore: '^\$LOCUSTCLASSES'
+  when: item.value != '__undef' and item.value
+  notify:
+    - restart locust instance
+  with_items:
+    - { name: "master", value: "{{master_mode|default('__undef')}}" }
+    - { name: "no-web", value: "{{no_web|default('__undef')}}" }
+- name: Store boolean option
+  lineinfile:
+    path: '/opt/locust.io/{{ instance_name }}/start_script'
+    create: true
+    state: absent
+    line: "--{{ item.name }} \\"
+    insertbefore: '^\$LOCUSTCLASSES'
+  when: item.value != '__undef' and not item.value
+  notify:
+    - restart locust instance
+  with_items:
+    - { name: "master", value: "{{master_mode|default('__undef')}}" }
+    - { name: "no-web", value: "{{no_web|default('__undef')}}" }
+
+# String values
+- name: Store string option
+  lineinfile:
+    path: '/opt/locust.io/{{ instance_name }}/start_script'
+    create: true
+    state: present
+    regexp: '^--{{ item.name }}='
+    line: "--{{ item.name }}={{ item.value }} \\"
+    insertbefore: '^\$LOCUSTCLASSES'
+  when: item.value != '__undef'
+  notify:
+    - restart locust instance
+  with_items:
+    - { name: "master-bind-host", value: "{{bind_host|default('__undef')}}" }
+    - { name: "master-bind-port", value: "{{bind_port|default('__undef')|string}}" }
+    - { name: "locustfile", value: "{{locustfile|default('__undef')}}" }
+    - { name: "web-host", value: "{{web_host|default('__undef')}}" }
+    - { name: "web-port", value: "{{web_port|default('__undef')|string}}" }
+    - { name: "clients", value: "{{clients|default('__undef')|string}}" }
+    - { name: "hatch-rate", value: "{{hatch_rate|default('__undef')|string}}" }
+    - { name: "num-request", value: "{{num_request|default('__undef')|string}}" }
+    - { name: "run-time", value: "{{run_time|default('__undef')}}" }
+    - { name: "host", value: "{{host|default('__undef')}}" }
+    - { name: "expect-slaves", value: "{{expect_slaves|default('__undef')|string}}" }
+    - { name: "csv", value: "{{csv|default('__undef')}}" }
+    - { name: "loglevel", value: "{{loglevel|default('__undef')}}" }
+    - { name: "logfile", value: "{{logfile|default('__undef')}}" }

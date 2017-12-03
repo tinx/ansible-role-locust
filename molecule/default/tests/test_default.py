@@ -41,13 +41,18 @@ def test_instances_running(host):
        (master, locust-3 and locust-5) and that they are running
        using the base virtualenv."""
     pythons = host.process.filter()
-    locusts = [proc for proc in pythons if 'locust.io' in proc.args]
+    locusts = [proc for proc in pythons
+               if '/opt/locust.io/base/virtenv/bin/locust' in proc.args]
     assert len(locusts) == 3
-    assert len(list(filter(
-      lambda x: '/opt/locust.io/master/locustfile.py' in x.args, locusts
-      ))) == 1
+    with host.sudo():
+        cmd = host.run("pwdx {} {} {}".format(locusts[0].pid,
+                                              locusts[1].pid,
+                                              locusts[2].pid))
+    assert '/opt/locust.io/master' in cmd.stdout
+    assert '/opt/locust.io/locust-3' in cmd.stdout
+    assert '/opt/locust.io/locust-5' in cmd.stdout
     l3 = list(filter(
-      lambda x: '/opt/locust.io/locust-3/locustfile.py' in x.args, locusts
+      lambda x: '--logfile=locust-3.log' in x.args, locusts
       ))
     assert len(l3) == 1
     assert l3[0].user == 'daemon'
@@ -76,7 +81,7 @@ def test_locust_2_optional_parameters(host):
     """This verifies that instance locust-2 has only the minimum required
        set of parameters, as no optional parameters were used to create it."""
     unit = host.file(
-      '/etc/systemd/system/locust-locust-2.service').content_string
+      '/opt/locust.io/locust-2/start_script').content_string
     assert "--master" in unit
     assert "--master-bind-host=" not in unit
     assert "--master-bind-port=" in unit
@@ -98,7 +103,7 @@ def test_locust_3_optional_parameters(host):
     """This verifies that instance locust-3 has all optional parameters,
        as they were used to create it."""
     unit = host.file(
-      '/etc/systemd/system/locust-locust-3.service').content_string
+      '/opt/locust.io/locust-3/start_script').content_string
     assert "--master " not in unit
     assert "--master-bind-host=" in unit
     assert "--master-bind-port=" in unit
@@ -140,5 +145,5 @@ def locust_5_uses_absolute_path_locustfile(host):
        absolute path to the locustfile that was explicitly given
        as a parameter, instead of the relative path as with the other."""
     unit = host.file(
-      '/etc/systemd/system/locust-locust-5.service').content_string
+      '/opt/locust.io/locust-5/start_script').content_string
     assert "--locustfile=/opt/locust.io/locust-5/./locustfile.py" in unit

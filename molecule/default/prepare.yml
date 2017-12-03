@@ -39,7 +39,7 @@
         locustfile: locustfile.py
         csv: csvreport
         loglevel: 'ERROR'
-        logfile: /tmp/locust-3.log
+        logfile: locust-3.log
         host: 'http://127.0.0.1'
         web_host: ''
         web_port: 12345

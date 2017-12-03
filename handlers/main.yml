@@ -1,9 +1,11 @@
 ---
 - name: reload locust systemd definitions
   command: /usr/bin/systemctl daemon-reload
+  listen: 'reload locust systemd definitions'
 
 - name: restart locust instance
   service:
     name: 'locust-{{ instance_name }}'
     state: restarted
   when: state == 'started'
+  listen: 'restart locust instance'
