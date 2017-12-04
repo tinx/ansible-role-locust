@@ -1,6 +1,6 @@
 # Ansible Role `locust`
 
-Manages locust.io instances.
+Manages Locust.io instances.
 
 ## Requirements
 
@@ -108,6 +108,7 @@ To have a running Locust.io master/slave setup you could do this:
            name: tinx.locust
         vars:
            mode: slave
+           master_host: locust-master.example.com
            instance_data: data/
            locustfile: 'stresstest-prod.py'
 
