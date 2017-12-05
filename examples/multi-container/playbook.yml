@@ -1,0 +1,73 @@
+---
+- name: Demonstrate Locust.io anisble role
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Create docker network
+      docker_network:
+        name: LocustTestNet
+        state: present
+
+    - name: Create master container
+      docker_container:
+        name: locust-master
+        image: retr0h/centos7-systemd-ansible
+        memory: 1024m
+        privileged: true
+        detach: true
+        hostname: locust-master
+        state: started
+        recreate: false
+        networks:
+          - name: LocustTestNet
+    - name: Add master host
+      add_host:
+        name: locust-master
+      changed_when: false
+
+    - name: Create slave container
+      docker_container:
+        name: locust-slave
+        image: retr0h/centos7-systemd-ansible
+        memory: 1024m
+        privileged: true
+        detach: true
+        hostname: locust-slave
+        state: started
+        recreate: false
+        networks:
+          - name: LocustTestNet
+    - name: Add slave host
+      add_host:
+        name: locust-slave
+      changed_when: false
+
+- name: Setup Locust.io master
+  hosts: locust-master
+  connection: docker
+  tasks:
+    - name: Install locust.io instance locust-2
+      include_role:
+        name: tinx.locust
+      vars:
+        mode: 'master'
+        instance_name: master
+        instance_data: data/
+        locustfile: locustfile.py
+        state: started
+
+- name: Setup Locust.io slave
+  hosts: locust-slave
+  connection: docker
+  tasks:
+    - name: Install locust.io instance
+      include_role:
+        name: tinx.locust
+      vars:
+        mode: 'slave'
+        master_host: locust-master
+        instance_name: slave
+        instance_data: data/
+        locustfile: locustfile.py
+        state: started
+
