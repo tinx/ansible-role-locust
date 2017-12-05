@@ -1,0 +1,19 @@
+---
+- name: remove example setup
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Remove docker network
+      docker_network:
+        name: LocustTestNet
+        state: absent
+
+    - name: Create master container
+      docker_container:
+        name: locust-master
+        state: absent
+
+    - name: Create slave container
+      docker_container:
+        name: locust-slave
+        state: absent
