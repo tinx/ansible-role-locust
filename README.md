@@ -27,7 +27,6 @@ inside a virtualenv.
 | `instance_data` |           | Path to data to be copied into instance dir  |
 | `locust_classes`| `[]`      | List of client classes to run                |
 | `locustfile`    |           | The Locust.io scenario file to play          |
-| `csv`           |           | Base name of CVS report files                |
 | `logfile`       |           | Filename of the Locust.io logfile            |
 | `loglevel`      |           | Locust.io log level                          |
 
@@ -38,6 +37,7 @@ inside a virtualenv.
 | `host`          |           | URL of the host to load test                 |
 | `web_host`      |           | IP address to bind the web interface to      |
 | `web_port`      |           | Port to bind the web interface to            |
+| `csv`           |           | Base name of CSV report files                |
 
 ### Master Mode Parameters
 
