@@ -1,0 +1,25 @@
+# Docker setup:
+# - create common network
+# - create container
+# - add new container to play inventory
+---
+- name: Create docker network
+  docker_network:
+    name: LocustTestNet
+    state: present
+- name: Create container
+  docker_container:
+    name: '{{ container_name }}'
+    image: retr0h/centos7-systemd-ansible
+    memory: 1024m
+    privileged: true
+    detach: true
+    hostname: '{{ container_name }}'
+    state: started
+    recreate: false
+    networks:
+      - name: LocustTestNet
+- name: Add host
+  add_host:
+    name: '{{ container_name }}'
+  changed_when: false
