@@ -8,12 +8,12 @@
         name: LocustTestNet
         state: absent
 
-    - name: Create master container
+    - name: Remove master container
       docker_container:
         name: locust-master
         state: absent
 
-    - name: Create slave container
+    - name: Remove slave container
       docker_container:
         name: locust-slave
         state: absent
