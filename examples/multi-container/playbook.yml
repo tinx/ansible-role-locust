@@ -24,6 +24,9 @@
         instance_data: data/
         locustfile: locustfile.py
         state: started
+        csv: csvreport
+        expect_slaves: 1
+        num_request: 10
 
 - name: Setup Locust.io slave
   hosts: locust-slave
@@ -39,4 +42,4 @@
         instance_data: data/
         locustfile: locustfile.py
         state: started
-
+        csv: csvreport
