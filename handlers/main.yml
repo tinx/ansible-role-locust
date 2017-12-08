@@ -1,6 +1,7 @@
 ---
 - name: reload locust systemd definitions
   command: /usr/bin/systemctl daemon-reload
+  when: st_service.stat.exists or state != 'stopped'
   listen: 'reload locust systemd definitions'
 
 - name: restart locust instance
