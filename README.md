@@ -29,6 +29,7 @@ inside a virtualenv.
 | `locustfile`    |           | The Locust.io scenario file to play          |
 | `logfile`       |           | Filename of the Locust.io logfile            |
 | `loglevel`      |           | Locust.io log level                          |
+| `base_dir`      | `/opt/locust.io` | Where to put Locust.io & instance data |
 
 ### Master Mode and Stand-Alone Mode Parameters
 
@@ -68,7 +69,10 @@ The `state` parameter can be one of:
 
 A directory named `/opt/locust.io` will be created. Inside of it, a
 subdirectory per instance will be created. If `state` is set to `absent`,
-this directory will be removed.
+this directory will be removed. The location can be changed with the
+`base_dir` parameter, but if you do you will have to specify the `base_dir`
+parameter again on all future plays controlling this instance, as otherwise
+it will not be found.
 
 The `instance_data` parameter can point to a file or directory to
 be copied into the instance subdirectory. For example, `instance_data: data/`

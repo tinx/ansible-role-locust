@@ -1,2 +1,3 @@
 ---
 state: 'started'
+base_dir: '/opt/locust.io'

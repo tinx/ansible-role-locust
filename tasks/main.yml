@@ -24,23 +24,23 @@
 # For state=absent:
 - name: Verify existence base directory
   stat:
-    path: '/opt/locust.io'
+    path: '{{ base_dir }}'
   register: st
 - block:
     - name: Remove locust.io instance
       file:
-        path: '/opt/locust.io/{{ instance_name }}'
+        path: '{{ base_dir }}/{{ instance_name }}'
         state: absent
     - name: Check whether base directory is empty
       find:
-        paths: '/opt/locust.io'
+        paths: '{{ base_dir }}'
         file_type: any
       register: ent
     - name: Remove base directory, if necessary
       file:
-        path: '/opt/locust.io'
+        path: '{{ base_dir }}'
         state: absent
-      when: ent.matched|int == 1 and ent.files[0].path == '/opt/locust.io/base'
+      when: ent.matched|int == 1 and ent.files[0].path == base_dir + '/base'
     - name: Remove systemd service file
       file:
         path: '/etc/systemd/system/locust-{{ instance_name }}.service'
@@ -74,18 +74,18 @@
         state: directory
         mode: 0711
       with_items:
-        - '/opt/locust.io'
-        - '/opt/locust.io/base'
-        - '/opt/locust.io/{{ instance_name }}'
+        - '{{ base_dir }}'
+        - '{{ base_dir }}/base'
+        - '{{ base_dir }}/{{ instance_name }}'
     - name: Set owner for instance directory
       file:
-        path: '/opt/locust.io/{{ instance_name }}'
+        path: '{{ base_dir }}/{{ instance_name }}'
         owner: '{{ run_as_user|default(omit) }}'
         group: '{{ run_as_group|default(omit) }}'
     - name: Install python requirements
       pip:
         name: 'locustio'
-        virtualenv: '/opt/locust.io/base/virtenv'
+        virtualenv: '{{ base_dir }}/base/virtenv'
     - name: Render systemd service file
       template:
         src: locust_systemd.j2
@@ -120,7 +120,7 @@
     - name: Copy instance data
       copy:
         src: '{{ instance_data }}'
-        dest: '/opt/locust.io/{{ instance_name }}'
+        dest: '{{ base_dir }}/{{ instance_name }}'
         owner: '{{ run_as_user|default(omit) }}'
         group: '{{ run_as_group|default(omit) }}'
       when: instance_data is defined

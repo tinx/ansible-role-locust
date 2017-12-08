@@ -1,12 +1,12 @@
 ---
 - name: Look for existing config file
   stat:
-    path: '/opt/locust.io/{{ instance_name }}/start_script'
+    path: '{{ base_dir }}/{{ instance_name }}/start_script'
   register: st
 - name: Render basic start script
   template:
     src: locust_startscript.j2
-    dest: '/opt/locust.io/{{ instance_name }}/start_script'
+    dest: '{{ base_dir }}/{{ instance_name }}/start_script'
     mode: 0755
     owner: '{{ run_as_user|default(omit) }}'
     group: '{{ run_as_group|default(omit) }}'
@@ -15,7 +15,7 @@
 # Boolean values
 - name: Store boolean option
   lineinfile:
-    path: '/opt/locust.io/{{ instance_name }}/start_script'
+    path: '{{ base_dir }}/{{ instance_name }}/start_script'
     create: true
     state: present
     line: "--{{ item.name }} \\"
@@ -27,7 +27,7 @@
     - { name: "no-web", value: "{{no_web|default('__undef')}}" }
 - name: Store boolean option
   lineinfile:
-    path: '/opt/locust.io/{{ instance_name }}/start_script'
+    path: '{{ base_dir }}/{{ instance_name }}/start_script'
     create: true
     state: absent
     line: "--{{ item.name }} \\"
@@ -41,7 +41,7 @@
 # String values
 - name: Store string option
   lineinfile:
-    path: '/opt/locust.io/{{ instance_name }}/start_script'
+    path: '{{ base_dir }}/{{ instance_name }}/start_script'
     create: true
     state: present
     regexp: '^--{{ item.name }}='
@@ -73,7 +73,7 @@
 
 - name: Storing locust classes
   lineinfile:
-    path: '/opt/locust.io/{{ instance_name }}/start_script'
+    path: '{{ base_dir }}/{{ instance_name }}/start_script'
     create: true
     state: present
     regexp: '^LOCUSTCLASSES='
