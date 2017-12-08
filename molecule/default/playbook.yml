@@ -1,0 +1,13 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  tasks:
+    - name: Install locust.io instance to non-standard base_dir
+      include_role:
+        name: tinx.locust
+      vars:
+        mode: 'master'
+        base_dir: '/usr/local/locust'
+        instance_name: 'master'
+        state: stopped
