@@ -1,0 +1,38 @@
+version: "2"
+settings:
+  conductor:
+    base: centos:7
+    roles_path:
+      - ../../..
+  project_name: centos7-locust
+  # deployment_output_path: ./ansible-deployment
+
+services:
+  master:
+    from: "centos:7"
+    roles:
+      - { role: tinx.locust,
+          mode: 'master',
+          no_web: false,
+          instance_name: 'master',
+          instance_data: '/src/files/',
+          locustfile: 'locustfile.py',
+          state: stopped }
+    expose:
+      - 5557
+    command: ["/opt/locust.io/master/start_script"]
+
+  slave:
+    depends_on: master
+    from: "centos:7"
+    roles:
+      - { role: tinx.locust,
+          mode: 'slave',
+          instance_name: 'slave',
+          instance_data: '/src/files/',
+          locustfile: 'locustfile.py',
+          master_host: 'locust-master',
+          state: stopped }
+    command: ["/opt/locust.io/slave/start_script"]
+
+registries: {}

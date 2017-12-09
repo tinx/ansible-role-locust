@@ -1,0 +1,25 @@
+---
+- name: remove example setup
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Get master image list
+      shell: docker images --format \"\{\{.Tag\}\}\" centos7-locust-master
+      register: images
+    - name: Remove master image
+      shell: docker rmi "centos7-locust-master:{{ item }}"
+      with_items: "{{ images.stdout_lines }}"
+
+    - name: Get slave image list
+      shell: docker images --format \"\{\{.Tag\}\}\" centos7-locust-slave
+      register: images
+    - name: Remove slave image
+      shell: docker rmi "centos7-locust-slave:{{ item }}"
+      with_items: "{{ images.stdout_lines }}"
+
+    - name: Get conductor image list
+      shell: docker images --format \"\{\{.Tag\}\}\" centos7-locust-conductor
+      register: images
+    - name: Remove slave image
+      shell: docker rmi "centos7-locust-conductor:{{ item }}"
+      with_items: "{{ images.stdout_lines }}"
