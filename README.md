@@ -4,10 +4,14 @@ Manages Locust.io instances.
 
 ## Requirements
 
-Locust.io requires ZeroMQ. This role will therefor install
-zeromq-devel and gcc system-wide to compile the necessary python
-pips for Locust.io. The upstream ZeroMQ yum repository will be
-registered and enabled to do this.
+Locust.io requires ZeroMQ. This role will therefor install the
+ZeroMQ library.
+
+On Ubunto, libzmq-devel will be installed.
+
+On CentOS, zeromq-devel and gcc will be installed to compile the
+necessary python pips for Locust.io. The upstream ZeroMQ yum
+repository will be registered and enabled to do this.
 
 All python related software requirements will be auto-installed
 inside a virtualenv.
