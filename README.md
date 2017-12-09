@@ -105,6 +105,7 @@ To have a running Locust.io master/slave setup you could do this:
            name: tinx.locust
         vars:
            mode: master
+           instance_name: master
 
     - hosts: locust_slaves
       tasks:
@@ -112,12 +113,19 @@ To have a running Locust.io master/slave setup you could do this:
            name: tinx.locust
         vars:
            mode: slave
+           instance_name: slave
            master_host: locust-master.example.com
            instance_data: data/
            locustfile: 'stresstest-prod.py'
 
 The master would wait for at least one slave to connect and would
 then start testing.
+
+### Examples
+
+There are further examples in the `examples/` directory:
+ - running a master/slave setup inside two docker containers
+ - building docker images using `ansible-container`
 
 ## Testing
 
