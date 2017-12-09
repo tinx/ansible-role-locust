@@ -1,0 +1,20 @@
+---
+- name: Add ZeroMQ repository
+  yum_repository:
+    baseurl: 'https://download.opensuse.org/repositories/network:/messaging:/zeromq:/release-draft/CentOS_7/'
+    gpgkey: 'http://download.opensuse.org/repositories/network:/messaging:/zeromq:/release-draft/CentOS_7/repodata/repomd.xml.key'
+    enabled: true
+    name: 'ZeroMQ'
+    description: 'Upstream repository for ZeroMQ message queue'
+    state: present
+- name: Update repo caches
+  yum:
+    name: python-virtualenv
+    update_cache: true
+- name: Install required packages
+  yum:
+    name: '{{ item }}'
+    state: present
+  with_items:
+    - zeromq-devel
+    - gcc

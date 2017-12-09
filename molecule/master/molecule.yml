@@ -6,12 +6,18 @@ driver:
 lint:
   name: yamllint
 platforms:
-  - name: instance
+  - name: centos-instance
     image: retr0h/centos7-systemd-ansible
     image_version: latest
     memory: 2048
     privileged: true
     command: /usr/sbin/init
+  - name: ubuntu-instance
+    image: solita/ubuntu-systemd
+    image_version: latest
+    memory: 2048
+    privileged: true
+    command: /sbin/init
 provisioner:
   name: ansible
   lint:

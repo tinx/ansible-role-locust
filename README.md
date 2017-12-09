@@ -89,7 +89,8 @@ Note: for reasons unknown Locust.io requires specifying `bind_host: '*'` but `we
 
 ## Operating Systems
 
-This role was developed and tested for CentOS 7.4.
+This role was developed and tested for CentOS 7.4. It was also
+tested for Ubuntu 16.04. (Xenial)
 
 ## Dependencies
 
