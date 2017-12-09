@@ -22,7 +22,7 @@ inside a virtualenv.
 
 | Variable        | Default   | Comments (type)                              |
 | :---            | :---      | :---                                         |
-| `instance_name` |           | Required. Name to distiguish instances.      |
+| `instance_name` | `default` | Name to distiguish instances.                |
 | `mode`          | `slave`   | Must be either master, slave or stand-alone  |
 | `state`         | `started` | State of Locust.io on the host.              |
 | `enabled`       | `false`   | If true, start this instance after reboots   |
@@ -110,7 +110,8 @@ To have a running Locust.io master/slave setup you could do this:
            name: tinx.locust
         vars:
            mode: master
-           instance_name: master
+           instance_data: data/
+           locustfile: 'stresstest-prod.py'
 
     - hosts: locust_slaves
       tasks:
@@ -118,7 +119,6 @@ To have a running Locust.io master/slave setup you could do this:
            name: tinx.locust
         vars:
            mode: slave
-           instance_name: slave
            master_host: locust-master.example.com
            instance_data: data/
            locustfile: 'stresstest-prod.py'

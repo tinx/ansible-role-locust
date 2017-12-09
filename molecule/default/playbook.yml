@@ -9,5 +9,4 @@
       vars:
         mode: 'master'
         base_dir: '/usr/local/locust'
-        instance_name: 'master'
         state: stopped
