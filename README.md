@@ -73,10 +73,11 @@ The `state` parameter can be one of:
 
 A directory named `/opt/locust.io` will be created. Inside of it, a
 subdirectory per instance will be created. If `state` is set to `absent`,
-this directory will be removed. The location can be changed with the
+this subdirectory will be removed. The location can be changed with the
 `base_dir` parameter, but if you do you will have to specify the `base_dir`
 parameter again on all future plays controlling this instance, as otherwise
-it will not be found.
+it will not be found. The `base_dir` itself will be removed along with the
+last instance.
 
 The `instance_data` parameter can point to a file or directory to
 be copied into the instance subdirectory. For example, `instance_data: data/`
